@@ -26,13 +26,17 @@ def translate_english_to_hebrew(text):
     tokenizer.src_lang = src_lang
     encoded_text = tokenizer(text, return_tensors="pt")
     
+    # השימוש ב-adder_tokens_decoder
+    forced_bos_token_id = tokenizer.convert_tokens_to_ids(tgt_lang)
+    
     generated_tokens = model.generate(
         **encoded_text,
-        forced_bos_token_id=tokenizer.lang_code_to_id[tgt_lang]
+        forced_bos_token_id=forced_bos_token_id
     )
     
     translated_text = tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)[0]
     return translated_text
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
